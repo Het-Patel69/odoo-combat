@@ -1,7 +1,7 @@
 "use client";
 
 // components/Login.tsx
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,15 +14,34 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { login } from "../../api/login/route";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 
 const theme = createTheme();
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
+  const supabase = createClient();
+
+  useEffect(() => {
+    (async function () {
+      const { data, error } = await supabase.auth.getUser();
+      if (!error && data?.user) {
+        router.push("/admin");
+      }
+    })();
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (!email.trim() || !password.trim()) {
+      toast.error("Fill all the fields");
+      return;
+    }
 
     // Handle login logic here
     const data = {
@@ -30,10 +49,17 @@ const Login: React.FC = () => {
       password,
     };
 
-    await fetch("/api/login", {
+    const response = await fetch("/api/login", {
       method: "post",
       body: JSON.stringify(data),
     });
+    const responseData = await response.json();
+
+    if (responseData.error) {
+      toast.error(responseData.error);
+      return;
+    }
+    router.push("/admin");
   };
 
   return (
@@ -88,7 +114,7 @@ const Login: React.FC = () => {
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Sign In
+              Log In
             </Button>
             <Grid style={{ display: "flex", justifyContent: "flex-end" }}>
               <Link href="register" variant="body2">

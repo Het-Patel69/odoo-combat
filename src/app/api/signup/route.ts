@@ -1,8 +1,10 @@
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
+  const requestUrl = new URL(request.url);
   const supabase = createClient();
   const payload = await request.json();
 
@@ -13,13 +15,24 @@ export async function POST(request: Request) {
     password: payload.password as string,
   };
 
-  const { error, data: user } = await supabase.auth.signUp(data);
+  const { error, data: userData } = await supabase.auth.signUp(data);
 
-  console.log(user);
+  if (userData.user) {
+    return NextResponse.redirect(`${requestUrl.origin}/admin`);
+  }
 
   if (error) {
+    if (error.status === 422) {
+      return NextResponse.json(
+        { error: "user already exist" },
+        { status: 400 }
+      );
+    }
     console.log(error);
-    redirect("/login");
+    return NextResponse.json(
+      { error: "invalid username or password" },
+      { status: 400 }
+    );
   }
 
   revalidatePath("/", "layout");
