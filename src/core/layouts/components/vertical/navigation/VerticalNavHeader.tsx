@@ -53,7 +53,7 @@ const VerticalNavHeader = (props: Props) => {
       {userVerticalNavMenuBranding ? (
         userVerticalNavMenuBranding(props)
       ) : (
-        <Link href="/" passHref>
+        <Link href="/admin" passHref>
           <HeaderTitle variant="h6" sx={{ ml: 3 }}>
             {themeConfig.templateName}
           </HeaderTitle>
