@@ -16,6 +16,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import { CircularProgress } from "@mui/material";
 
 const theme = createTheme();
 
@@ -36,10 +37,12 @@ const Login: React.FC = () => {
   }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    setLoading(true);
     event.preventDefault();
 
     if (!email.trim() || !password.trim()) {
       toast.error("Fill all the fields");
+      setLoading(false);
       return;
     }
 
@@ -57,9 +60,12 @@ const Login: React.FC = () => {
 
     if (responseData.error) {
       toast.error(responseData.error);
+      setLoading(false);
       return;
     }
+
     router.push("/admin");
+    setLoading(false);
   };
 
   return (
@@ -85,6 +91,7 @@ const Login: React.FC = () => {
             sx={{ mt: 1 }}
           >
             <TextField
+              disabled={loading}
               margin="normal"
               required
               fullWidth
@@ -97,6 +104,7 @@ const Login: React.FC = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
+              disabled={loading}
               margin="normal"
               required
               fullWidth
@@ -109,12 +117,13 @@ const Login: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
             <Button
+              disabled={loading}
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
-              Log In
+              {loading ? <CircularProgress size={24} /> : "Log In"}
             </Button>
             <Grid style={{ display: "flex", justifyContent: "flex-end" }}>
               <Link href="register" variant="body2">
