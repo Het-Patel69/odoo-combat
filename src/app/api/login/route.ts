@@ -20,9 +20,12 @@ export async function POST(request: Request) {
   );
 
   if (userData.user) {
-    return NextResponse.redirect(`${requestUrl.origin}/admin`, {
-      status: 301,
-    });
+    return NextResponse.json(
+      { data: { message: "ok" } },
+      {
+        status: 200,
+      }
+    );
   }
 
   if (error) {

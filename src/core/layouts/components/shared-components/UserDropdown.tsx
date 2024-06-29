@@ -14,6 +14,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { Logout } from "@mui/icons-material";
+import { createClient } from "@/utils/supabase/client";
 
 // ** Icons Imports
 
@@ -27,6 +28,7 @@ const BadgeContentSpan = styled("span")(({ theme }) => ({
 }));
 
 const UserDropdown = () => {
+  const supabase = createClient();
   // ** States
   const [anchorEl, setAnchorEl] = useState<Element | null>(null);
 
@@ -42,6 +44,11 @@ const UserDropdown = () => {
       router.push(url);
     }
     setAnchorEl(null);
+  };
+
+  const handleLogOut = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
   };
 
   const styles = {
@@ -110,10 +117,7 @@ const UserDropdown = () => {
         </Box>
         <Divider sx={{ mt: 0, mb: 1 }} />
 
-        <MenuItem
-          sx={{ py: 2 }}
-          onClick={() => handleDropdownClose("/pages/login")}
-        >
+        <MenuItem sx={{ py: 2 }} onClick={() => handleLogOut()}>
           <Logout
             sx={{
               marginRight: 2,

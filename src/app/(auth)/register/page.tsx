@@ -20,6 +20,7 @@ import { createClient } from "@/utils/supabase/client";
 const theme = createTheme();
 
 const Login: React.FC = () => {
+  const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();

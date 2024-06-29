@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 
 // ** Type Import
 import { Settings } from "@/core/context/settingsContext";
-import { Nightlife, WbSunny } from "@mui/icons-material";
+import { DarkMode, WbSunny } from "@mui/icons-material";
 
 interface Props {
   settings: Settings;
@@ -31,7 +31,7 @@ const ModeToggler = (props: Props) => {
 
   return (
     <IconButton color="inherit" aria-haspopup="true" onClick={handleModeToggle}>
-      {settings.mode === "dark" ? <WbSunny /> : <Nightlife />}
+      {settings.mode === "dark" ? <WbSunny /> : <DarkMode />}
     </IconButton>
   );
 };
